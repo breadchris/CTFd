@@ -47,6 +47,9 @@
                             aria-hidden="true">×</span></button>
                 </div>
             {% endif %}
+            <center>
+                <p>If you are still in school, we ask that each member of your team participate in a survery that can be found <a href="http://goo.gl/forms/nXKhUZUlfTiB9ips1" target="_blank">here</a></p>
+            </center>
             <form method="post" accept-charset="utf-8" autocomplete="off" role="form" class="form-horizontal">
                 <div class="row">
                     <div class="col-md-12">
@@ -88,7 +91,34 @@
                         </span>
                     </div>
                 </div>
-                <hr />
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="input">
+                            <select name="bracket" class="input-field" id="input-10">
+                            {% for b in brackets %}
+                              <option value={{ b }} {% if bracket == b %}selected{% endif %}>{{ b }}</option>
+                            {% endfor %}
+                            </select>
+                            <label class="input-label" for="input-10">
+                                <span class="label-content" data-content="Bracket">Bracket</span>
+                            </label>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="input">
+                            <select name="country" class="input-field" id="input-10">
+                            {% for c in countries %}
+                              <option value="{{ c }}" {% if country == c %}selected{% endif %}>{{ c }}</option>
+                            {% endfor %}
+                            </select>
+                            <label class="input-label" for="input-10">
+                                <span class="label-content" data-content="Country">Country</span>
+                            </label>
+                        </span>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-12">
                         <span class="input">
@@ -105,16 +135,6 @@
                             <input class="input-field" type="text" name="website" id="website-input" value="{% if website %}{{website}}{% endif %}" />
                             <label class="input-label" for="website-input">
                                 <span class="label-content" data-content="Website">Website</span>
-                            </label>
-                        </span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <span class="input">
-                            <input class="input-field" type="text" name="country" id="country-input" value="{% if country %}{{country}}{% endif %}" />
-                            <label class="input-label" for="country-input">
-                                <span class="label-content" data-content="Country">Country</span>
                             </label>
                         </span>
                     </div>

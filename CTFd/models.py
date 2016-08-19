@@ -131,10 +131,13 @@ class Teams(db.Model):
     verified = db.Column(db.Boolean)
     admin = db.Column(db.Boolean)
 
-    def __init__(self, name, email, password):
+    def __init__(self, name, email, password, bracket, country, affiliation):
         self.name = name
         self.email = email
         self.password = bcrypt_sha256.encrypt(str(password))
+        self.bracket = bracket
+        self.country = country
+        self.affiliation = affiliation
 
     def __repr__(self):
         return '<team %r>' % self.name

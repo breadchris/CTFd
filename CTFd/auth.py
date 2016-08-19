@@ -6,6 +6,8 @@ from itsdangerous import TimedSerializer, BadTimeSignature, Signer, BadSignature
 from passlib.hash import bcrypt_sha256
 from flask import current_app as app
 
+from register_vars import countries, brackets
+
 import logging
 import time
 import re
@@ -65,7 +67,7 @@ def reset_password(data=None):
         s = TimedSerializer(app.config['SECRET_KEY'])
         token = s.dumps(team.name)
         text = """
-Did you initiate a password reset? 
+Did you initiate a password reset?
 
 {0}/reset_password/{1}
 
@@ -76,6 +78,9 @@ Did you initiate a password reset?
         return render_template('reset_password.html', errors=['Check your email'])
     return render_template('reset_password.html')
 
+@auth.route('/demo/register')
+def register_demo():
+    return render_template('register.html', brackets=brackets, countries=countries)
 
 @auth.route('/register', methods=['POST', 'GET'])
 def register():
@@ -86,6 +91,9 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
+        bracket = request.form['bracket']
+        country = request.form['country']
+        affiliation = request.form['affiliation']
 
         name_len = len(name) == 0
         names = Teams.query.add_columns('name', 'id').filter_by(name=name).first()
@@ -93,6 +101,10 @@ def register():
         pass_short = len(password) == 0
         pass_long = len(password) > 128
         valid_email = re.match("[^@]+@[^@]+\.[^@]+", request.form['email'])
+        bracket_exists = bracket in brackets
+        country_exists = country in countries
+        print country_exists
+        print country
 
         if not valid_email:
             errors.append("That email doesn't look right")
@@ -106,12 +118,16 @@ def register():
             errors.append('Pick a shorter password')
         if name_len:
             errors.append('Pick a longer team name')
+        if not bracket_exists:
+            errors.append('Please select a valid bracket')
+        if not country_exists:
+            errors.append('Please select a valid country')
 
         if len(errors) > 0:
-            return render_template('register.html', errors=errors, name=request.form['name'], email=request.form['email'], password=request.form['password'])
+            return render_template('register.html', errors=errors, name=request.form['name'], email=request.form['email'], password=request.form['password'], brackets=brackets, countries=countries)
         else:
             with app.app_context():
-                team = Teams(name, email.lower(), password)
+                team = Teams(name, email.lower(), password, bracket, country, affiliation)
                 db.session.add(team)
                 db.session.commit()
                 db.session.flush()
@@ -133,7 +149,7 @@ def register():
         logger.warn("[{0}] {1} registered with {2}".format(time.strftime("%m/%d/%Y %X"), request.form['name'].encode('utf-8'), request.form['email'].encode('utf-8')))
         return redirect(url_for('challenges.challenges_view'))
     else:
-        return render_template('register.html')
+        return render_template('register.html', brackets=brackets, countries=countries)
 
 
 @auth.route('/login', methods=['POST', 'GET'])

@@ -6,6 +6,8 @@ from jinja2.exceptions import TemplateNotFound
 from passlib.hash import bcrypt_sha256
 from collections import OrderedDict
 
+from register_vars import countries, brackets
+
 import logging
 import os
 import re
@@ -24,6 +26,10 @@ def redirect_setup():
     if not is_setup() and request.path != "/setup":
         return redirect(url_for('views.setup'))
 
+@views.route('/demo/profile')
+def profile_demo():
+    return render_template('profile.html', name="demo", email="demo@demo.com", website="http://example.com", affiliation="Example University",
+                           country="United States", countries=countries, brackets=brackets)
 
 @views.route('/setup', methods=['GET', 'POST'])
 def setup():
@@ -160,6 +166,7 @@ def profile():
             email = request.form.get('email')
             website = request.form.get('website')
             affiliation = request.form.get('affiliation')
+            bracket = request.form.get('bracket')
             country = request.form.get('country')
 
             user = Teams.query.filter_by(id=session['id']).first()
@@ -170,6 +177,8 @@ def profile():
 
             emails = Teams.query.filter_by(email=email).first()
             valid_email = re.match("[^@]+@[^@]+\.[^@]+", email)
+            bracket_exists = bracket in brackets
+            country_exists = country in countries
 
             if ('password' in request.form.keys() and not len(request.form['password']) == 0) and \
                     (not bcrypt_sha256.verify(request.form.get('confirm').strip(), user.password)):
@@ -184,10 +193,15 @@ def profile():
                 errors.append('Pick a longer team name')
             if website.strip() and not validate_url(website):
                 errors.append("That doesn't look like a valid URL")
+            if not bracket_exists:
+                errors.append('Please select a valid bracket')
+            if not country_exists:
+                errors.append('Please select a valid country')
 
             if len(errors) > 0:
                 return render_template('profile.html', name=name, email=email, website=website,
-                                       affiliation=affiliation, country=country, errors=errors)
+                                       affiliation=affiliation, country=country, errors=errors,
+                                       countries=countries, brackets=brackets)
             else:
                 team = Teams.query.filter_by(id=session['id']).first()
                 if not get_config('prevent_name_change'):
@@ -216,6 +230,7 @@ def profile():
             prevent_name_change = get_config('prevent_name_change')
             confirm_email = get_config('verify_emails') and not user.verified
             return render_template('profile.html', name=name, email=email, website=website, affiliation=affiliation,
-                                   country=country, prevent_name_change=prevent_name_change, confirm_email=confirm_email)
+                                   country=country, prevent_name_change=prevent_name_change, confirm_email=confirm_email,
+                                   countries=countries, brackets=brackets)
     else:
         return redirect(url_for('auth.login'))
