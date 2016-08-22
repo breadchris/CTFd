@@ -190,14 +190,11 @@ function loadchals() {
 
                 var categoryid = category.replace(/ /g,"-").hashCode();
                 var categoryrow = $('' +
-                    '<div id="{0}-row">'.format(categoryid) +
-                        '<div class="category-header col-md-2">' +
-                        '</div>' +
-                        '<div class="category-challenges col-md-12">' +
-                            '<div class="chal-row"></div>' +
-                        '</div>' +
+                    '<div class="category-header grid-10 center">' +
+                    '</div>' +
+                    '<div id="{0}-row" class="chal-row list-hex-grid list-inline-block clearfix">'.format(categoryid) +
                     '</div>');
-                categoryrow.find(".category-header").append($("<h3>"+ category +"</h3>"));
+                categoryrow.find(".category-header").append($("<h1 class='tagline'>"+ category +"</h1>"));
 
                 $('#challenges-board').append(categoryrow);
             }
@@ -208,15 +205,25 @@ function loadchals() {
             var challenge = chalinfo.category.replace(/ /g,"-").hashCode();
             var chalid = chalinfo.name.replace(/ /g,"-").hashCode();
             var catid = chalinfo.category.replace(/ /g,"-").hashCode();
-            var chalwrap = $("<div id='{0}' class='challenge-wrapper col-md-2'></div>".format(chalid));
-            var chalbutton = $("<button class='challenge-button trigger theme-background hide-text' value='{0}' data-toggle='modal' data-target='#chal-window'></div>".format(chalinfo.id));
+            var chalwrap = $("<div id='{0}' class='hex grid-3 full-img'></div>".format(chalid));
+            var chalbutton = $("<button class='' value='{0}' data-toggle='modal' data-target='#chal-window'></div>".format(chalinfo.id));
             var chalheader = $("<h5>{0}</h5>".format(chalinfo.name));
             var chalscore = $("<span>{0}</span>".format(chalinfo.value));
-            chalbutton.append(chalheader);
-            chalbutton.append(chalscore);
-            chalwrap.append(chalbutton);
+            chalwrap.append($('\
+            <a id="{0}" href="/about" title="About Built by Buffalo Web Design">\
+                    <div class="inner">\
+                        <img src="/static/img/test.png" width="133" height="140" alt="About Built by Buffalo Web Design">\
+                    </div>\
+                    <div class="hex-1"><span class="after" style="opacity: 1;"></span></div>\
+                    <div class="hex-2"><span class="after" style="opacity: 1;"></span></div>\
+                    <span class="after" style="opacity: 1;"></span>\
+                </a>\
+            '.format(chalid)));
+            //chalbutton.append(chalheader);
+            //chalbutton.append(chalscore);
+            //chalwrap.append(chalbutton);
 
-            $("#"+ catid +"-row").find(".category-challenges > .chal-row").append(chalwrap);
+            $("#"+ catid +"-row").append(chalwrap);
         };
 
         updatesolves();

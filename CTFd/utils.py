@@ -1,6 +1,6 @@
 from CTFd.models import db, WrongKeys, Pages, Config, Tracking, Teams
 
-from six.moves.urllib.parse import urlparse, urljoin 
+from six.moves.urllib.parse import urlparse, urljoin
 from functools import wraps
 from flask import current_app as app, g, request, redirect, url_for, session, render_template, abort
 from itsdangerous import Signer, BadSignature
@@ -171,9 +171,10 @@ def can_register():
 def admins_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if session.get('admin', None) is None:
+        if session.get('admin'):
             return redirect(url_for('auth.login'))
-        return f(*args, **kwargs)
+        else:
+            return f(*args, **kwargs)
     return decorated_function
 
 
@@ -203,11 +204,11 @@ def ctftime():
             # Within the two time bounds
             return True
 
-    if start < time.time() and end == 0: 
+    if start < time.time() and end == 0:
         # CTF starts on a date but never ends
         return True
 
-    if start == 0 and time.time() < end: 
+    if start == 0 and time.time() < end:
         # CTF started but ends at a date
         return True
 

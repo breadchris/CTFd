@@ -20,7 +20,7 @@
 </div>
 <div class="container main-container">
 
-    <div class="row">
+    <div class="grid-10 center">
         <div id="login-container" class="col-md-6 col-md-offset-3">
             {% if success %}
                 <div class="alert alert-success alert-dismissable submit-row" role="alert">
@@ -51,15 +51,13 @@
                 <p>If you are still in school, we ask that each member of your team participate in a survery that can be found <a href="http://goo.gl/forms/nXKhUZUlfTiB9ips1" target="_blank">here</a></p>
             </center>
             <form method="post" accept-charset="utf-8" autocomplete="off" role="form" class="form-horizontal">
-                <div class="row">
-                    <div class="col-md-12">
-                        <span class="input">
-                            <input class="input-field" type="text" name="name" id="name-input" value="{{name}}"/>
-                            <label class="input-label" for="name-input">
-                                <span class="label-content" data-content="Team Name">Team Name</span>
-                            </label>
-                        </span>
-                    </div>
+                <div class="grid-10 center">
+                    <span class="input">
+                        <input class="input-field" type="text" name="name" id="name-input" value="{{name}}"/>
+                        <label class="input-label" for="name-input">
+                            <span class="label-content" data-content="Team Name">Team Name</span>
+                        </label>
+                    </span>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
